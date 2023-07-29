@@ -34,7 +34,7 @@ This project aims to provide a solution for splitting PDF pages that are uploade
 4. Create a Microsoft Power Automate flow triggered when a PDF file is uploaded to SharePoint.
 5. Use the HTTP action in Power Automate to send a POST request with the PDF file as the payload to your Python web application's endpoint (`http://your-ubuntu-server-ip:8000/upload`).
 
-![HTTP POST](https://github.com/korhanh/pdf-page-splitter/blob/main/Post.png)
+![HTTP POST](https://github.com/korhanh/pdf-page-splitter/blob/Version-1/Post.png)
 
 
 6. Set up subsequent actions in the Power Automate flow to handle the returned split PDF files and add them back to SharePoint.
