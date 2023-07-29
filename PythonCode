@@ -1,0 +1,52 @@
+import os
+import base64
+from fastapi import FastAPI, File
+from fastapi.responses import FileResponse
+import uvicorn
+from PyPDF2 import PdfReader, PdfWriter
+
+app = FastAPI()
+
+@app.post('/upload')
+async def upload_pdf(file: bytes = File(...)):
+    output_folder = 'output'
+    os.makedirs(output_folder, exist_ok=True)
+    file_path = os.path.join(output_folder, 'file.pdf')
+
+    # Writing Base64 data to the file
+    with open(file_path, 'wb') as output_file:
+        decoded_data = base64.b64decode(file)
+        output_file.write(decoded_data)
+
+    # Splitting and saving the PDF into individual pages
+    output_files = []
+    with open(file_path, 'rb') as pdf_file:
+        pdf_reader = PdfReader(pdf_file)
+        num_pages = len(pdf_reader.pages)
+        for page_num in range(num_pages):
+            pdf_writer = PdfWriter()
+            page = pdf_reader.pages[page_num]
+            pdf_writer.add_page(page)
+            output_page_path = os.path.join(output_folder, f'page_{page_num}.pdf')
+            with open(output_page_path, 'wb') as output_page_file:
+                pdf_writer.write(output_page_file)
+            output_files.append(output_page_path)
+
+    return {'filename': 'file.pdf', 'output_folder': output_folder, 'output_files': output_files}
+
+@app.get('/download/{file_name}')
+async def download_pdf(file_name: str):
+    file_path = os.path.join('output', file_name)
+    return FileResponse(file_path)
+
+@app.delete('/delete/{file_name}')
+async def delete_pdf(file_name: str):
+    file_path = os.path.join('output', file_name)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        return {'message': f'{file_name} has been deleted.'}
+    else:
+        return {'message': f'{file_name} not found.'}
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='0.0.0.0', port=8000)
