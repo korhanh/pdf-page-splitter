@@ -33,6 +33,10 @@ This project aims to provide a solution for splitting PDF pages that are uploade
 3. Run the Python web application using `uvicorn main:app --host 0.0.0.0 --port 8000`.
 4. Create a Microsoft Power Automate flow triggered when a PDF file is uploaded to SharePoint.
 5. Use the HTTP action in Power Automate to send a POST request with the PDF file as the payload to your Python web application's endpoint (`http://your-ubuntu-server-ip:8000/upload`).
+
+![HTTP POST](https://github.com/korhanh/pdf-page-splitter/blob/main/Post.png)
+
+
 6. Set up subsequent actions in the Power Automate flow to handle the returned split PDF files and add them back to SharePoint.
 7. Optionally, add another HTTP action to send a DELETE request to the Python web application's endpoint (`http://your-ubuntu-server-ip:8000/delete/{file_name}`) to clean up temporary files.
 
